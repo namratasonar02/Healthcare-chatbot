@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  healthcare-ai-assistant:
+    build: .
+    container_name: healthcare_ai
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_MODEL=mistral
+      # Adjust this if ollama is running on the host machine.
+      # 'host.docker.internal' works on Mac/Windows. On Linux, use host IP or setup extra_hosts.
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - CHROMA_PATH=./vector_store
+      - DATA_PATH=./data
+    volumes:
+      - ./data:/app/data
+      - ./vector_store:/app/vector_store
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
