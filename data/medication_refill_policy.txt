@@ -1,0 +1,4 @@
+Medication Refill Policy (Derived from WHO Guidelines)
+Standard medication refills require a 48-hour notice.
+Patients can request refills through the patient portal, by calling the pharmacy directly, or during a scheduled telehealth appointment.
+If a prescription has expired, a new consultation with a healthcare provider is mandatory before a refill can be authorized.

@@ -1,0 +1,4 @@
+Appointment Scheduling (Derived from CDC Open Data)
+Appointments can be scheduled up to 6 months in advance.
+Patients must provide at least 24 hours notice for cancellations to avoid a no-show fee.
+Walk-in appointments are reserved strictly for urgent care needs. Routine check-ups must be scheduled in advance.

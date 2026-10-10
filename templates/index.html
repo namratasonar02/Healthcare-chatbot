@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare AI Assistant</title>
+    <!-- Google Fonts: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Premium Styles -->
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-primary: #0ea5e9;
+            --accent-secondary: #0d9488;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --accent-glow: rgba(14, 165, 233, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.1) 0px, transparent 50%);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .premium-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .premium-card:hover {
+            box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.2);
+        }
+
+        .header-title {
+            background: linear-gradient(135deg, #0ea5e9 0%, #2dd4bf 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .status-badge.gemini {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-success);
+            border-color: rgba(16, 185, 129, 0.2);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+        }
+
+        .status-badge.ollama {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-warning);
+            border-color: rgba(245, 158, 11, 0.2);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.1);
+        }
+
+        .form-control-premium {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            border-radius: 12px;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-premium:focus {
+            background: rgba(15, 23, 42, 0.8);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .btn-premium-primary {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, #0284c7 100%);
+            border: none;
+            color: white;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-premium-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-premium-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-premium-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-premium-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .answer-box {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            min-height: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .source-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .source-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateX(4px);
+        }
+
+        .dot-glow {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .gemini .dot-glow {
+            background-color: var(--accent-success);
+            box-shadow: 0 0 8px var(--accent-success);
+            animation: pulse 2s infinite;
+        }
+
+        .ollama .dot-glow {
+            background-color: var(--accent-warning);
+            box-shadow: 0 0 8px var(--accent-warning);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.5; }
+        }
+
+        /* Loading Shimmer Animation */
+        .loading-shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Suggested Question Badge Styles */
+        .btn-suggested-q {
+            background: rgba(14, 165, 233, 0.08);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            color: #bae6fd;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .btn-suggested-q:hover {
+            background: rgba(14, 165, 233, 0.18);
+            border-color: rgba(14, 165, 233, 0.4);
+            color: #f0f9ff;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="p-4 p-md-5">
+    <div class="container" style="max-width: 850px;">
+        <div class="premium-card p-4 p-md-5">
+            <!-- Header -->
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4 pb-4 border-bottom border-secondary border-opacity-10">
+                <div>
+                    <h2 class="header-title mb-1">Healthcare AI Assistant</h2>
+                    <p class="text-secondary mb-0">Secure Policy & Appointment Assistant</p>
+                </div>
+                <div id="backendIndicator" class="status-badge ollama">
+                    <span class="dot-glow"></span>
+                    <span id="backendText">Checking Status...</span>
+                </div>
+            </div>
+
+            <!-- Ingestion Panel -->
+            <div class="mb-4">
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-3">
+                    <div>
+                        <h5 class="text-white mb-1">Document Ingestion</h5>
+                        <p class="text-secondary small mb-0">Vectorizes txt files inside <code>./data</code></p>
+                    </div>
+                    <button id="ingestBtn" class="btn btn-premium-secondary d-flex align-items-center gap-2">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        Ingest Documents
+                    </button>
+                </div>
+                <div id="ingestResult" class="text-success small fw-medium mt-1"></div>
+            </div>
+
+            <!-- Query Input -->
+            <div class="mb-3">
+                <label for="question" class="form-label text-white fw-medium mb-2">Ask a Question:</label>
+                <div class="input-group">
+                    <input type="text" class="form-control form-control-premium" id="question" placeholder="e.g. Can a patient request a medication refill through telehealth?">
+                    <button id="askBtn" class="btn btn-premium-primary px-4 d-flex align-items-center gap-2">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        Ask
+                    </button>
+                </div>
+            </div>
+
+            <!-- Suggested Questions -->
+            <div class="mb-4">
+                <span class="text-secondary small fw-medium d-block mb-2">Suggested Questions (Click to Ask):</span>
+                <div class="d-flex flex-column gap-2">
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-suggested-q">What is the policy on medication refills?</button>
+                        <button class="btn btn-suggested-q">Are out of network insurances accepted?</button>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-suggested-q">Can I book a cardiology appointment on Monday?</button>
+                        <button class="btn btn-suggested-q">Can a patient request a refill through telehealth?</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Answer Box -->
+            <div class="mb-4">
+                <h5 class="text-white mb-3">Answer</h5>
+                <div id="answerBox" class="answer-box">
+                    <p id="answerText" class="text-secondary mb-0">No answer generated yet. Enter a question above to start.</p>
+                </div>
+            </div>
+
+            <!-- Metadata & Sources -->
+            <div class="row g-4">
+                <div class="col-12 col-md-4">
+                    <h6 class="text-white mb-2">Confidence Level</h6>
+                    <span id="confidenceBadge" class="badge bg-secondary p-2 px-3 fs-6 rounded-3">N/A</span>
+                </div>
+                <div class="col-12 col-md-8">
+                    <h6 class="text-white mb-2">Supporting Sources</h6>
+                    <div id="sourcesContainer" class="d-flex flex-column gap-2">
+                        <span class="text-secondary small">No sources.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Check backend configuration info
+        async function updateBackendInfo() {
+            const indicator = document.getElementById('backendIndicator');
+            const backendText = document.getElementById('backendText');
+            
+            try {
+                const res = await fetch('/api/info');
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                
+                if (data.llm_source === 'gemini') {
+                    indicator.className = 'status-badge gemini';
+                    backendText.innerText = 'Cloud (Gemini API - Fast)';
+                } else {
+                    indicator.className = 'status-badge ollama';
+                    backendText.innerText = `Local (Ollama: ${data.ollama_model})`;
+                }
+            } catch (e) {
+                indicator.className = 'status-badge ollama';
+                backendText.innerText = 'Offline';
+            }
+        }
+
+        // Run on startup
+        updateBackendInfo();
+
+        // Bind suggested questions click handler
+        document.querySelectorAll('.btn-suggested-q').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('question').value = btn.innerText;
+                document.getElementById('askBtn').click();
+            });
+        });
+
+        // Ingestion Click Handler
+        document.getElementById('ingestBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('ingestBtn');
+            const res = document.getElementById('ingestResult');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Ingesting...`;
+            res.innerText = "";
+            res.className = "text-secondary small fw-medium mt-1";
+            try {
+                const response = await fetch('/ingest', { method: 'POST' });
+                if (!response.ok) {
+                    throw new Error("Ingestion failed on server.");
+                }
+                const data = await response.json();
+                res.innerText = `${data.message} - Documents: ${data.documents}, Chunks: ${data.chunks}`;
+                res.className = "text-success small fw-medium mt-1";
+            } catch(e) {
+                res.innerText = "Ingestion failed. Vector store database is currently locked or read-only.";
+                res.className = "text-danger small fw-medium mt-1";
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg> Ingest Documents`;
+            }
+        });
+
+        // Ask Click Handler
+        document.getElementById('askBtn').addEventListener('click', async () => {
+            const question = document.getElementById('question').value.trim();
+            if(!question) return;
+            
+            const btn = document.getElementById('askBtn');
+            const answerBox = document.getElementById('answerBox');
+            const answerText = document.getElementById('answerText');
+            
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Thinking...`;
+            
+            // Set loading state in answer box
+            answerBox.classList.add('loading-shimmer');
+            answerText.innerText = "Processing query and retrieving relevant policy context...";
+            answerText.className = "text-secondary fst-italic";
+            
+            try {
+                const response = await fetch('/ask', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ question })
+                });
+                if (!response.ok) {
+                    throw new Error("Ask request failed.");
+                }
+                const data = await response.json();
+                
+                // Remove loading state
+                answerBox.classList.remove('loading-shimmer');
+                answerText.className = "text-white";
+                answerText.innerText = data.answer;
+                
+                // Confidence badge
+                const confBadge = document.getElementById('confidenceBadge');
+                confBadge.innerText = data.confidence ? data.confidence.toUpperCase() : "N/A";
+                
+                if (data.confidence === 'high') {
+                    confBadge.className = 'badge bg-success p-2 px-3 fs-6 rounded-3';
+                } else if (data.confidence === 'medium') {
+                    confBadge.className = 'badge bg-warning text-dark p-2 px-3 fs-6 rounded-3';
+                } else {
+                    confBadge.className = 'badge bg-danger p-2 px-3 fs-6 rounded-3';
+                }
+                
+                // Sources list
+                const sourcesContainer = document.getElementById('sourcesContainer');
+                sourcesContainer.innerHTML = '';
+                if(data.sources && data.sources.length > 0) {
+                    data.sources.forEach(src => {
+                        const div = document.createElement('div');
+                        div.className = 'source-item';
+                        div.innerHTML = `
+                            <div class="text-info small fw-bold mb-1">📄 ${src.document}</div>
+                            <div class="text-secondary small" style="font-size: 0.85rem; line-height: 1.4;">${src.chunk}</div>
+                        `;
+                        sourcesContainer.appendChild(div);
+                    });
+                } else {
+                    sourcesContainer.innerHTML = '<span class="text-secondary small">No sources.</span>';
+                }
+            } catch (e) {
+                answerBox.classList.remove('loading-shimmer');
+                answerText.className = "text-danger";
+                answerText.innerText = "Error asking question. Please check backend connection.";
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> Ask`;
+            }
+        });
+    </script>
+</body>
+</html>

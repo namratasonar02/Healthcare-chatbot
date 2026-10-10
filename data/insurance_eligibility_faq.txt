@@ -1,0 +1,6 @@
+Insurance Eligibility FAQ
+Q: Do you accept out-of-network insurance?
+A: We only process in-network insurance claims. Out-of-network patients must pay out-of-pocket and submit their own reimbursement claims.
+
+Q: When must copays be paid?
+A: All copays and deductibles are due at the time of service, prior to seeing the physician.

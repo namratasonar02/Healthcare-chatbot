@@ -1,0 +1,4 @@
+Telehealth Policy (Derived from MedlinePlus)
+Patients may request telehealth consultations for non-emergency medical conditions, follow-ups, and routine medication refills.
+To request a medication refill through telehealth, the patient must have been seen by their primary care provider within the last 12 months.
+Controlled substances cannot be refilled via telehealth and require an in-person visit.
